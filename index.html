@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ray Studio 18 - 3D Visualization Studio</title>
+  <style>
+    /* Reset & CSS Variables */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: #121212;
+      --accent-gold: #cba258;
+      --text-white: #ffffff;
+      --text-gray: #a0a0a0;
+      --border-color: #262626;
+      --font-serif: "Playfair Display", Georgia, serif;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    nav a {
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-gray);
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: var(--accent-gold);
+    }
+
+    .btn-gold {
+      background-color: var(--accent-gold);
+      color: #000;
+      padding: 10px 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-gold:hover {
+      background-color: #e5b865;
+    }
+
+    .btn-outline {
+      border: 1px solid var(--text-white);
+      padding: 10px 20px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: transparent;
+      color: var(--text-white);
+      cursor: pointer;
+    }
+
+    /* Common Section Formatting */
+    section {
+      padding: 100px 50px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      color: var(--accent-gold);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-weight: 400;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                  url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80') center/cover;
+      padding-top: 150px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: 4rem;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      max-width: 700px;
+      font-weight: 400;
+    }
+
+    .hero p {
+      color: var(--text-gray);
+      max-width: 500px;
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+    }
+
+    /* Services Section */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 50px;
+      margin-top: 40px;
+    }
+
+    .service-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-gray);
+      padding: 15px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      border-color: var(--accent-gold);
+      color: var(--text-white);
+    }
+
+    .service-content {
+      background: var(--bg-card);
+      padding: 40px;
+      border: 1px solid var(--border-color);
+    }
+
+    .service-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .service-details ul {
+      list-style: none;
+    }
+
+    .service-details li {
+      margin-bottom: 8px;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+    }
+
+    /* Portfolio Section */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .portfolio-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .portfolio-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.8);
+      transition: transform 0.5s;
+    }
+
+    .portfolio-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .portfolio-info {
+      padding: 20px;
+    }
+
+    .portfolio-info span {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+    }
+
+    .portfolio-info h3 {
+      font-size: 1.2rem;
+      margin-top: 5px;
+    }
+
+    /* Stats Section */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 60px 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .stat-box h3 {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      color: var(--accent-gold);
+    }
+
+    .stat-box p {
+      color: var(--text-gray);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Process Section */
+    .process-list {
+      margin-top: 40px;
+    }
+
+    .process-step {
+      display: grid;
+      grid-template-columns: 80px 200px 1fr;
+      padding: 25px 0;
+      border-bottom: 1px solid var(--border-color);
+      align-items: center;
+    }
+
+    .process-num {
+      color: var(--accent-gold);
+      font-size: 0.9rem;
+    }
+
+    .process-title {
+      font-size: 1.1rem;
+    }
+
+    .process-desc {
+      color: var(--text-gray);
+      font-size: 0.9rem;
+    }
+
+    /* Principles Grid */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .principle-card {
+      background: var(--bg-card);
+      padding: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    .principle-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .principle-card p {
+      color: var(--text-gray);
+      font-size: 0.9rem;
+    }
+
+    /* Contact / Start Project Section */
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 50px;
+      margin-top: 40px;
+    }
+
+    .contact-info p {
+      color: var(--text-gray);
+      margin-bottom: 20px;
+    }
+
+    .contact-details div {
+      margin-bottom: 15px;
+    }
+
+    .contact-details label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-gray);
+      text-transform: uppercase;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      color: var(--text-gray);
+    }
+
+    form input, form textarea, form select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      color: var(--text-white);
+      font-family: inherit;
+    }
+
+    /* Footer */
+    footer {
+      background: #050505;
+      padding: 60px 50px 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 50px;
+      margin-bottom: 40px;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-gray);
+      font-size: 0.8rem;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      header { padding: 15px 20px; }
+      section { padding: 60px 20px; }
+      .services-grid, .contact-container, .principles-grid, .footer-grid { grid-template-columns: 1fr; }
+      .stats-container { grid-template-columns: 1fr 1fr; }
+      .process-step { grid-template-columns: 1fr; gap: 10px; }
+      .hero h1 { font-size: 2.5rem; }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="logo">RAY STUDIO 18</div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#start-project" class="btn-gold">Start a Project</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <span class="section-tag">3D Visualization Studio</span>
+    <h1>We Render Your Vision</h1>
+    <p>Architectural renders, interior walkthroughs, and product animations crafted to world-class standards.</p>
+    <div class="hero-buttons">
+      <a href="#portfolio" class="btn-outline">View Portfolio</a>
+      <a href="#start-project" class="btn-gold">Start a Project</a>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services">
+    <span class="section-tag">What We Do</span>
+    <h2>Visualization Services</h2>
+    <p style="color: var(--text-gray); max-width: 600px;">From a single hero render to a full animation suite, we offer end-to-end 3D visualization tailored to architects, developers, interior designers, and product brands.</p>
+    
+    <div class="services-grid">
+      <div class="service-tabs">
+        <button class="tab-btn active" onclick="switchTab(0)">01 Architectural Rendering</button>
+        <button class="tab-btn" onclick="switchTab(1)">02 Interior Visualization</button>
+        <button class="tab-btn" onclick="switchTab(2)">03 Walkthrough Animation</button>
+        <button class="tab-btn" onclick="switchTab(3)">04 Product Rendering & Animation</button>
+        <button class="tab-btn" onclick="switchTab(4)">05 3D Modeling Outsourcing</button>
+      </div>
+      
+      <div class="service-content" id="service-display">
+        <h3 id="service-title" style="font-family: var(--font-serif); font-size: 1.8rem;">Architectural Rendering</h3>
+        <p id="service-subtitle" style="color: var(--accent-gold); font-style: italic; margin-bottom: 15px;">Exterior & aerial perspectives that sell the vision before the first brick is laid.</p>
+        <p id="service-desc" style="color: var(--text-gray);">We produce photorealistic exterior renders for residential, commercial, and mixed-use projects at every scale — from a single family home to a city-block masterplan.</p>
+
+        <div class="service-details">
+          <div>
+            <span class="section-tag">Deliverables</span>
+            <ul id="service-deliverables">
+              <li>• Exterior day & dusk renders</li>
+              <li>• Aerial and bird's-eye perspectives</li>
+              <li>• Contextual street-level views</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-tag">Typical Turnaround</span>
+            <h4 id="service-turnaround" style="font-size: 1.2rem; font-weight: normal;">5 – 10 business days</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selected Work / Portfolio Section -->
+  <section id="portfolio">
+    <span class="section-tag">Selected Work</span>
+    <h2>The Work Speaks</h2>
+    
+    <div class="portfolio-grid">
+      <div class="portfolio-card">
+        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Meridian Residences">
+        <div class="portfolio-info">
+          <span>Architectural Rendering</span>
+          <h3>Meridian Residences</h3>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80" alt="Onyx Penthouse">
+        <div class="portfolio-info">
+          <span>Interior Visualization</span>
+          <h3>Onyx Penthouse</h3>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Vertex Tower">
+        <div class="portfolio-info">
+          <span>Architectural Rendering</span>
+          <h3>Vertex Tower</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Banner -->
+  <section style="padding: 0 50px;">
+    <div class="stats-container">
+      <div class="stat-box">
+        <h3>500+</h3>
+        <p>Projects Delivered</p>
+      </div>
+      <div class="stat-box">
+        <h3>8+</h3>
+        <p>Years of Experience</p>
+      </div>
+      <div class="stat-box">
+        <h3>30+</h3>
+        <p>Client Countries</p>
+      </div>
+      <div class="stat-box">
+        <h3>100%</h3>
+        <p>Client Satisfaction</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <span class="section-tag">The Studio</span>
+    <h2>Where Architecture Meets Art</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; color: var(--text-gray);">
+      <p>Founded in 2018, Ray Studio 18 began as a one-person operation with a single conviction: that photorealistic visualization could be both technically flawless and emotionally resonant. Over eight years, that conviction has grown into a team of specialists — architects, artists, and animators — united by an obsession with light, material, and space.</p>
+      <p>We work at the intersection of architecture and storytelling. Every project begins with a deep understanding of the design intent, the target audience, and the emotional response the client wants to evoke. From there, we build worlds — pixel by pixel, frame by frame — until the image speaks for itself.</p>
+    </div>
+
+    <!-- Process -->
+    <div style="margin-top: 80px;">
+      <span class="section-tag">How We Work</span>
+      <h2>A Process Built for Precision</h2>
+      <div class="process-list">
+        <div class="process-step">
+          <span class="process-num">01</span>
+          <span class="process-title">Discovery</span>
+          <span class="process-desc">We begin every engagement with a thorough brief – understanding the project's design intent, target audience, mood, and deliverable requirements.</span>
+        </div>
+        <div class="process-step">
+          <span class="process-num">02</span>
+          <span class="process-title">Concept & Blocking</span>
+          <span class="process-desc">We establish camera angles, lighting direction, and material palette before committing to full production. You approve the direction before we invest in detail.</span>
+        </div>
+        <div class="process-step">
+          <span class="process-num">03</span>
+          <span class="process-title">Production</span>
+          <span class="process-desc">Our team builds the scene with meticulous attention to geometry, material accuracy, and lighting physics. We iterate rapidly, sharing progress at defined milestones.</span>
+        </div>
+        <div class="process-step">
+          <span class="process-num">04</span>
+          <span class="process-title">Refinement</span>
+          <span class="process-desc">Two rounds of revisions are included on every project. We refine until the image matches your vision – not just technically, but emotionally.</span>
+        </div>
+        <div class="process-step">
+          <span class="process-num">05</span>
+          <span class="process-title">Delivery</span>
+          <span class="process-desc">Final files are delivered in agreed formats – print-ready TIFFs, web-optimised JPEGs, or animation exports – with a structured handoff and archive package.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Principles -->
+    <div style="margin-top: 80px;">
+      <span class="section-tag">What Drives Us</span>
+      <h2>Our Principles</h2>
+      <div class="principles-grid">
+        <div class="principle-card">
+          <h3>Craft Over Speed</h3>
+          <p>We take the time to get it right. Every render is reviewed against a quality benchmark before it leaves the studio.</p>
+        </div>
+        <div class="principle-card">
+          <h3>Transparency</h3>
+          <p>Clear timelines, honest feedback, and no surprises. We communicate proactively at every stage of production.</p>
+        </div>
+        <div class="principle-card">
+          <h3>Collaboration</h3>
+          <p>We treat every client as a creative partner. Your expertise in the project combined with ours in visualization produces the best outcomes.</p>
+        </div>
+        <div class="principle-card">
+          <h3>Continuous Improvement</h3>
+          <p>We invest in the latest rendering technology and techniques so our output stays ahead of industry standards.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Start a Project / Contact Section -->
+  <section id="start-project">
+    <span class="section-tag">Let's Collaborate</span>
+    <h2>Start a Project</h2>
+    
+    <div class="contact-container">
+      <div class="contact-info">
+        <p>Tell us about your project. We'll review your brief and get back to you within 24 hours with a tailored proposal.</p>
+        
+        <div class="contact-details">
+          <div>
+            <label>Email</label>
+            <span>hello@raystudio18.com</span>
+          </div>
+          <div>
+            <label>Response Time</label>
+            <span>Within 24 Hours</span>
+          </div>
+          <div>
+            <label>Based In</label>
+            <span>Global – serving clients in 30+ countries</span>
+          </div>
+        </div>
+      </div>
+
+      <form onsubmit="event.preventDefault(); alert('Form Submitted!');">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" placeholder="Jane Smith" required>
+        </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" placeholder="jane@studio.com" required>
+        </div>
+        <div class="form-group">
+          <label>Service Required</label>
+          <select>
+            <option>Architectural Rendering</option>
+            <option>Interior Visualization</option>
+            <option>Walkthrough Animation</option>
+            <option>Product Rendering</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Project Brief *</label>
+          <textarea rows="4" placeholder="Tell us about your project scope, timeline, and deliverables..." required></textarea>
+        </div>
+        <button type="submit" class="btn-gold">Start a Project</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom: 15px;">Ray Studio 18</div>
+        <p style="color: var(--text-gray); font-size: 0.85rem; max-width: 300px;">World-class 3D visualization for architecture, interiors, and products.</p>
+      </div>
+      <div>
+        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; color: var(--text-gray);">Navigation</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
+          <a href="#services">Services</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#about">About</a>
+          <a href="#start-project">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; color: var(--text-gray);">Connect</h4>
+        <p style="color: var(--text-gray); font-size: 0.85rem;">kirampanchal@raystudio18.com</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Ray Studio 18. All rights reserved.</span>
+      <span>3D Visualization • Architectural Rendering • Product Animation</span>
+    </div>
+  </footer>
+
+  <!-- Tab Switching Logic for Services -->
+  <script>
+    const servicesData = [
+      {
+        title: "Architectural Rendering",
+        subtitle: "Exterior & aerial perspectives that sell the vision before the first brick is laid.",
+        desc: "We produce photorealistic exterior renders for residential, commercial, and mixed-use projects at every scale — from a single-family home to a city-block masterplan.",
+        deliverables: ["Exterior day & dusk renders", "Aerial and bird's-eye perspectives", "Contextual street-level views", "Masterplan overviews"],
+        turnaround: "5 – 10 business days"
+      },
+      {
+        title: "Interior Visualization",
+        subtitle: "Spaces that feel lived-in before they exist — light, material, and atmosphere perfected.",
+        desc: "Interior visualization is where light and material science meet emotional storytelling. We model every surface to produce interior renders that feel genuinely inhabited.",
+        deliverables: ["Living, dining, and bedroom renders", "Kitchen and bathroom close-ups", "Hospitality and commercial interiors"],
+        turnaround: "5 – 8 business days"
+      },
+      {
+        title: "Walkthrough Animation",
+        subtitle: "Cinematic fly-throughs and walk-throughs that guide viewers through every space.",
+        desc: "Our animation team produces fully rendered architectural walkthroughs at up to 4K resolution.",
+        deliverables: ["Exterior fly-through animations", "Interior walkthrough sequences", "Drone perspective aerials"],
+        turnaround: "10 – 20 business days"
+      },
+      {
+        title: "Product Rendering & Animation",
+        subtitle: "Studio-quality product imagery and motion for launches and e-commerce.",
+        desc: "We give physical products to-scale, hyper-realistic 3D renders and animations — no studio photography needed.",
+        deliverables: ["Hero product renders on white or custom backgrounds", "360° turntable animations", "Exploded-view detail shots"],
+        turnaround: "3 – 7 business days"
+      },
+      {
+        title: "3D Modeling Outsourcing",
+        subtitle: "Dedicated rendering capacity for studios that need to scale without hiring.",
+        desc: "We act as a white-label production partner for architecture firms, interior design studios, and visualization agencies.",
+        deliverables: ["White-label rendering under your brand", "Dedicated project manager", "Revit, SketchUp, Rhino, 3ds Max, Blender support"],
+        turnaround: "Agreed per engagement"
+      }
+    ];
+
+    function switchTab(index) {
+      const data = servicesData[index];
+      const buttons = document.querySelectorAll('.tab-btn');
+      
+      buttons.forEach((btn, i) => {
+        if(i === index) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+
+      document.getElementById('service-title').innerText = data.title;
+      document.getElementById('service-subtitle').innerText = data.subtitle;
+      document.getElementById('service-desc').innerText = data.desc;
+      document.getElementById('service-turnaround').innerText = data.turnaround;
+
+      const delivList = document.getElementById('service-deliverables');
+      delivList.innerHTML = '';
+      data.deliverables.forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = '• ' + item;
+        delivList.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
