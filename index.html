@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ray Studio 18 - 3D Visualization Studio</title>
+  <title>Ray Studio 18 — Architectural Visualization</title>
   <style>
-    /* Reset & CSS Variables */
+    /* CSS RESET & VARS */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     :root {
-      --bg-dark: #0a0a0a;
-      --bg-card: #121212;
-      --accent-gold: #cba258;
-      --text-white: #ffffff;
-      --text-gray: #a0a0a0;
-      --border-color: #262626;
+      --bg-main: #f9f9f7;
+      --bg-card: #ffffff;
+      --text-primary: #121212;
+      --text-muted: #6e6e6e;
+      --accent-charcoal: #1c1c1c;
+      --accent-gold: #b39775;
+      --border-color: #e5e5e0;
       --font-serif: "Playfair Display", Georgia, serif;
       --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     }
@@ -27,10 +29,11 @@
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-white);
+      background-color: var(--bg-main);
+      color: var(--text-primary);
       font-family: var(--font-sans);
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
     a {
@@ -38,7 +41,7 @@
       text-decoration: none;
     }
 
-    /* Navigation */
+    /* NAVIGATION */
     header {
       position: fixed;
       top: 0;
@@ -46,163 +49,183 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 50px;
-      background: rgba(10, 10, 10, 0.9);
-      backdrop-filter: blur(10px);
+      padding: 15px 60px;
+      background: rgba(249, 249, 247, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 1000;
       border-bottom: 1px solid var(--border-color);
     }
 
-    .logo {
-      font-family: var(--font-serif);
-      font-size: 1.5rem;
-      letter-spacing: 2px;
-      font-weight: bold;
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-img {
+      height: 60px; /* Scaled up for high visibility */
+      width: auto;
+      object-fit: contain;
     }
 
     nav {
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 36px;
     }
 
     nav a {
-      font-size: 0.85rem;
-      letter-spacing: 1px;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: var(--text-gray);
-      transition: color 0.3s;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
     }
 
     nav a:hover {
-      color: var(--accent-gold);
+      color: var(--text-primary);
     }
 
-    .btn-gold {
-      background-color: var(--accent-gold);
-      color: #000;
-      padding: 10px 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
+    .btn-dark {
+      background-color: var(--accent-charcoal);
+      color: #ffffff;
+      padding: 12px 24px;
+      font-size: 0.75rem;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      border: none;
+      letter-spacing: 1.5px;
+      border: 1px solid var(--accent-charcoal);
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .btn-gold:hover {
-      background-color: #e5b865;
+    .btn-dark:hover {
+      background-color: transparent;
+      color: var(--text-primary);
     }
 
     .btn-outline {
-      border: 1px solid var(--text-white);
-      padding: 10px 20px;
-      font-size: 0.8rem;
+      border: 1px solid var(--accent-charcoal);
+      padding: 12px 24px;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       background: transparent;
-      color: var(--text-white);
+      color: var(--text-primary);
       cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Common Section Formatting */
+    .btn-outline:hover {
+      background-color: var(--accent-charcoal);
+      color: #ffffff;
+    }
+
+    /* SECTIONS SETUP */
     section {
-      padding: 100px 50px;
-      max-width: 1300px;
+      padding: 120px 60px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
     .section-tag {
       color: var(--accent-gold);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
       display: block;
+      font-weight: 600;
     }
 
     h2 {
       font-family: var(--font-serif);
-      font-size: 2.5rem;
-      margin-bottom: 20px;
+      font-size: 3rem;
+      margin-bottom: 24px;
       font-weight: 400;
+      letter-spacing: -0.5px;
     }
 
-    /* Hero Section with Your Custom Render */
+    /* HERO SECTION */
     .hero {
-      height: 100vh;
+      position: relative;
+      min-height: 95vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+      padding-top: 120px;
+      background: linear-gradient(180deg, rgba(249, 249, 247, 0.7) 0%, rgba(249, 249, 247, 0.95) 100%), 
                   url('https://i.postimg.cc/gk3NN8JP/hero-bg.jpg') center/cover no-repeat;
-      padding-top: 150px;
     }
 
     .hero h1 {
       font-family: var(--font-serif);
-      font-size: 4rem;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      max-width: 700px;
+      font-size: 4.8rem;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      max-width: 900px;
       font-weight: 400;
     }
 
     .hero p {
-      color: var(--text-gray);
-      max-width: 500px;
-      margin-bottom: 30px;
-      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 40px;
+      font-size: 1.15rem;
+      font-weight: 300;
     }
 
     .hero-buttons {
       display: flex;
-      gap: 15px;
+      gap: 18px;
     }
 
-    /* Services Section */
+    /* SERVICES SECTION */
     .services-grid {
       display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 50px;
-      margin-top: 40px;
+      grid-template-columns: 320px 1fr;
+      gap: 60px;
+      margin-top: 50px;
     }
 
     .service-tabs {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
     }
 
     .tab-btn {
       background: transparent;
       border: 1px solid var(--border-color);
-      color: var(--text-gray);
-      padding: 15px;
+      color: var(--text-muted);
+      padding: 20px;
       text-align: left;
       cursor: pointer;
-      font-size: 0.9rem;
-      transition: 0.3s;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s;
     }
 
     .tab-btn.active, .tab-btn:hover {
-      border-color: var(--accent-gold);
-      color: var(--text-white);
+      border-color: var(--accent-charcoal);
+      color: var(--text-primary);
+      background: var(--bg-card);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     .service-content {
       background: var(--bg-card);
-      padding: 40px;
+      padding: 50px;
       border: 1px solid var(--border-color);
     }
 
     .service-details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-top: 30px;
+      gap: 40px;
+      margin-top: 40px;
       padding-top: 30px;
       border-top: 1px solid var(--border-color);
     }
@@ -212,17 +235,17 @@
     }
 
     .service-details li {
-      margin-bottom: 8px;
-      color: var(--text-gray);
-      font-size: 0.9rem;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
-    /* Portfolio Section */
+    /* PORTFOLIO GRID */
     .portfolio-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
     }
 
     .portfolio-card {
@@ -230,15 +253,27 @@
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+    }
+
+    .img-wrapper {
+      position: relative;
+      overflow: hidden;
+      height: 320px;
     }
 
     .portfolio-card img {
       width: 100%;
-      height: 300px;
+      height: 100%;
       object-fit: cover;
       display: block;
-      filter: brightness(0.8);
-      transition: transform 0.5s;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .portfolio-card:hover img {
@@ -246,26 +281,160 @@
     }
 
     .portfolio-info {
-      padding: 20px;
+      padding: 24px;
     }
 
     .portfolio-info span {
       font-size: 0.75rem;
       color: var(--accent-gold);
       text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
     }
 
     .portfolio-info h3 {
-      font-size: 1.2rem;
-      margin-top: 5px;
+      font-size: 1.4rem;
+      margin-top: 6px;
+      font-family: var(--font-serif);
+      font-weight: 400;
     }
 
-    /* Stats Section */
+    /* LIGHTBOX MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(18, 18, 18, 0.92);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .modal-content {
+      position: relative;
+      background: var(--bg-card);
+      max-width: 1100px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-img-container {
+      position: relative;
+      width: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 480px;
+    }
+
+    .modal-img-container img {
+      max-width: 100%;
+      max-height: 65vh;
+      object-fit: contain;
+    }
+
+    .modal-img-container iframe {
+      width: 100%;
+      height: 520px;
+      border: none;
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.85);
+      color: #000;
+      border: none;
+      font-size: 1.5rem;
+      padding: 12px 18px;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.3s;
+    }
+
+    .slider-btn:hover {
+      background: #ffffff;
+    }
+
+    .slider-btn.prev { left: 15px; }
+    .slider-btn.next { right: 15px; }
+
+    .modal-details {
+      padding: 40px;
+    }
+
+    .modal-details h3 {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      font-weight: 400;
+    }
+
+    .modal-details span {
+      color: var(--accent-gold);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .modal-details p {
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 2.5rem;
+      color: #ffffff;
+      cursor: pointer;
+      z-index: 2001;
+      line-height: 1;
+    }
+
+    .model-selector {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .model-tab-btn {
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-main);
+      cursor: pointer;
+    }
+
+    .model-tab-btn.active {
+      background: var(--accent-charcoal);
+      color: #fff;
+      border-color: var(--accent-charcoal);
+    }
+
+    /* STATS BANNER */
     .stats-container {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
-      padding: 60px 0;
+      padding: 70px 0;
       border-top: 1px solid var(--border-color);
       border-bottom: 1px solid var(--border-color);
       text-align: center;
@@ -273,45 +442,20 @@
 
     .stat-box h3 {
       font-family: var(--font-serif);
-      font-size: 3rem;
-      color: var(--accent-gold);
+      font-size: 3.5rem;
+      color: var(--accent-charcoal);
+      font-weight: 400;
     }
 
     .stat-box p {
-      color: var(--text-gray);
+      color: var(--text-muted);
       font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      margin-top: 5px;
     }
 
-    /* Process Section */
-    .process-list {
-      margin-top: 40px;
-    }
-
-    .process-step {
-      display: grid;
-      grid-template-columns: 80px 200px 1fr;
-      padding: 25px 0;
-      border-bottom: 1px solid var(--border-color);
-      align-items: center;
-    }
-
-    .process-num {
-      color: var(--accent-gold);
-      font-size: 0.9rem;
-    }
-
-    .process-title {
-      font-size: 1.1rem;
-    }
-
-    .process-desc {
-      color: var(--text-gray);
-      font-size: 0.9rem;
-    }
-
-    /* Principles Grid */
+    /* PRINCIPLES GRID */
     .principles-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -321,217 +465,291 @@
 
     .principle-card {
       background: var(--bg-card);
-      padding: 30px;
+      padding: 40px;
       border: 1px solid var(--border-color);
     }
 
     .principle-card h3 {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+      font-family: var(--font-serif);
+      font-weight: 400;
     }
 
     .principle-card p {
-      color: var(--text-gray);
-      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
     }
 
-    /* Contact / Start Project Section */
+    /* CONTACT SECTION */
     .contact-container {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
-      gap: 50px;
-      margin-top: 40px;
+      gap: 60px;
+      margin-top: 50px;
     }
 
     .contact-info p {
-      color: var(--text-gray);
-      margin-bottom: 20px;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-size: 1.05rem;
     }
 
     .contact-details div {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .contact-details label {
       display: block;
       font-size: 0.75rem;
-      color: var(--text-gray);
+      color: var(--accent-gold);
       text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .contact-details span {
+      font-size: 1.1rem;
+      color: var(--text-primary);
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 8px;
     }
 
     .form-group label {
       font-size: 0.8rem;
-      color: var(--text-gray);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     form input, form textarea, form select {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      padding: 12px;
-      color: var(--text-white);
+      padding: 16px;
+      color: var(--text-primary);
       font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
     }
 
-    /* Footer */
+    form input:focus, form textarea:focus, form select:focus {
+      border-color: var(--accent-charcoal);
+    }
+
+    /* FOOTER */
     footer {
-      background: #050505;
-      padding: 60px 50px 20px;
+      background: #f2f2ee;
+      padding: 80px 60px 30px;
       border-top: 1px solid var(--border-color);
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr;
-      gap: 50px;
-      margin-bottom: 40px;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo {
+      height: 110px; /* Scaled up big logo */
+      width: auto;
+      object-fit: contain;
+      mix-blend-mode: multiply; /* Blends white box cleanly into footer background */
+    }
+
+    .footer-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      color: var(--accent-charcoal);
+      font-weight: 400;
+      letter-spacing: -0.5px;
     }
 
     .footer-bottom {
       display: flex;
       justify-content: space-between;
-      color: var(--text-gray);
+      color: var(--text-muted);
       font-size: 0.8rem;
-      padding-top: 20px;
+      padding-top: 24px;
       border-top: 1px solid var(--border-color);
+      letter-spacing: 1px;
     }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      header { padding: 15px 20px; }
-      section { padding: 60px 20px; }
+    /* RESPONSIVE DESIGN */
+    @media (max-width: 992px) {
+      header { padding: 18px 30px; }
+      section { padding: 80px 30px; }
+      .hero h1 { font-size: 3.2rem; }
       .services-grid, .contact-container, .principles-grid, .footer-grid { grid-template-columns: 1fr; }
-      .stats-container { grid-template-columns: 1fr 1fr; }
-      .process-step { grid-template-columns: 1fr; gap: 10px; }
-      .hero h1 { font-size: 2.5rem; }
+      .stats-container { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .portfolio-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- Navigation Bar -->
   <header>
-    <div class="logo">RAY STUDIO 18</div>
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/Y0540GNt/raystudio18LOGO.png" alt="Ray Studio 18 Logo" class="logo-img">
+    </div>
     <nav>
       <a href="#services">Services</a>
       <a href="#portfolio">Portfolio</a>
       <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <a href="#start-project" class="btn-gold">Start a Project</a>
+      <a href="#start-project">Contact</a>
     </nav>
   </header>
 
   <!-- Hero Section -->
   <section class="hero" id="home">
-    <span class="section-tag">3D Visualization Studio</span>
-    <h1>We Render Your Vision</h1>
-    <p>Architectural renders, interior walkthroughs, and product animations crafted to world-class standards.</p>
+    <span class="section-tag">High-End Architectural Visualization</span>
+    <h1>Visualizing Architecture With Uncompromised Precision</h1>
+    <p>We combine advanced lighting setups, bespoke material textures, and spatial clarity to turn architectural design concepts into compelling visual experiences.</p>
     <div class="hero-buttons">
-      <a href="#portfolio" class="btn-outline">View Portfolio</a>
-      <a href="#start-project" class="btn-gold">Start a Project</a>
+      <a href="#portfolio" class="btn-outline">Explore Portfolio</a>
+      <a href="#start-project" class="btn-dark">Inquire Project</a>
     </div>
   </section>
 
   <!-- Services Section -->
   <section id="services">
-    <span class="section-tag">What We Do</span>
+    <span class="section-tag">Core Expertise</span>
     <h2>Visualization Services</h2>
-    <p style="color: var(--text-gray); max-width: 600px;">From a single hero render to a full animation suite, we offer end-to-end 3D visualization tailored to architects, developers, interior designers, and product brands.</p>
+    <p style="color: var(--text-muted); max-width: 620px; font-size: 1.05rem;">Delivering high-definition renders, walkthroughs, and conceptual visual imagery for architects, interior designers, and property developers worldwide.</p>
     
     <div class="services-grid">
       <div class="service-tabs">
-        <button class="tab-btn active" onclick="switchTab(0)">01 Architectural Rendering</button>
-        <button class="tab-btn" onclick="switchTab(1)">02 Interior Visualization</button>
-        <button class="tab-btn" onclick="switchTab(2)">03 Walkthrough Animation</button>
-        <button class="tab-btn" onclick="switchTab(3)">04 Product Rendering & Animation</button>
-        <button class="tab-btn" onclick="switchTab(4)">05 3D Modeling Outsourcing</button>
+        <button class="tab-btn active" onclick="switchTab(0)">01 Interior Visualization</button>
+        <button class="tab-btn" onclick="switchTab(1)">02 Exterior Architecture</button>
+        <button class="tab-btn" onclick="switchTab(2)">03 Commercial Spaces</button>
+        <button class="tab-btn" onclick="switchTab(3)">04 Material & Lighting</button>
       </div>
       
       <div class="service-content" id="service-display">
-        <h3 id="service-title" style="font-family: var(--font-serif); font-size: 1.8rem;">Architectural Rendering</h3>
-        <p id="service-subtitle" style="color: var(--accent-gold); font-style: italic; margin-bottom: 15px;">Exterior & aerial perspectives that sell the vision before the first brick is laid.</p>
-        <p id="service-desc" style="color: var(--text-gray);">We produce photorealistic exterior renders for residential, commercial, and mixed-use projects at every scale — from a single family home to a city-block masterplan.</p>
+        <h3 id="service-title" style="font-family: var(--font-serif); font-size: 2rem; font-weight: 400;">Interior Visualization</h3>
+        <p id="service-subtitle" style="color: var(--accent-gold); font-style: italic; margin-bottom: 18px; margin-top: 4px;">Spaces that feel lived-in before they exist.</p>
+        <p id="service-desc" style="color: var(--text-muted); line-height: 1.7;">We model every surface to produce interior renders that feel genuinely inhabited and precisely illuminated.</p>
 
         <div class="service-details">
           <div>
             <span class="section-tag">Deliverables</span>
             <ul id="service-deliverables">
-              <li>• Exterior day & dusk renders</li>
-              <li>• Aerial and bird's-eye perspectives</li>
-              <li>• Contextual street-level views</li>
+              <li>• Living, dining, and bedroom renders</li>
+              <li>• Kitchen and bathroom close-ups</li>
+              <li>• Material lighting variations</li>
             </ul>
           </div>
           <div>
-            <span class="section-tag">Typical Turnaround</span>
-            <h4 id="service-turnaround" style="font-size: 1.2rem; font-weight: normal;">5 – 10 business days</h4>
+            <span class="section-tag">Turnaround</span>
+            <h4 id="service-turnaround" style="font-size: 1.3rem; font-weight: 400; margin-top: 6px;">5 – 8 business days</h4>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Selected Work / Portfolio Section -->
+  <!-- Portfolio Section -->
   <section id="portfolio">
-    <span class="section-tag">Selected Work</span>
-    <h2>The Work Speaks</h2>
+    <span class="section-tag">Selected Works</span>
+    <h2>Portfolio Renders</h2>
     
-    <div class="portfolio-grid">
-      <div class="portfolio-card">
-        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Meridian Residences">
-        <div class="portfolio-info">
-          <span>Architectural Rendering</span>
-          <h3>Meridian Residences</h3>
-        </div>
-      </div>
-
-      <div class="portfolio-card">
-        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80" alt="Onyx Penthouse">
-        <div class="portfolio-info">
-          <span>Interior Visualization</span>
-          <h3>Onyx Penthouse</h3>
-        </div>
-      </div>
-
-      <div class="portfolio-card">
-        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Vertex Tower">
-        <div class="portfolio-info">
-          <span>Architectural Rendering</span>
-          <h3>Vertex Tower</h3>
-        </div>
-      </div>
+    <div class="portfolio-grid" id="portfolio-container">
+      <!-- Generated dynamically by JavaScript -->
     </div>
   </section>
 
+  <!-- Standard Lightbox Modal -->
+  <div class="modal" id="portfolio-modal">
+    <span class="close-modal" onclick="closeModal('portfolio-modal')">&times;</span>
+    <div class="modal-content">
+      <div class="modal-img-container">
+        <img id="modal-img" src="" alt="Full Render">
+      </div>
+      <div class="modal-details">
+        <span id="modal-category">Category</span>
+        <h3 id="modal-title">Project Name</h3>
+        <p id="modal-desc">Project Description</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Interactive Sketchfab 3D Models Popup -->
+  <div class="modal" id="sketchfab-modal">
+    <span class="close-modal" onclick="closeModal('sketchfab-modal')">&times;</span>
+    <div class="modal-content">
+      <div class="modal-img-container">
+        <iframe id="sketchfab-frame" src="https://sketchfab.com/models/pO69M/embed" allow="autoplay; fullscreen; xr-spatial-tracking" execution-while-out-of-viewport execution-while-rendered webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+      <div class="modal-details">
+        <span>Interactive 3D Asset Showcase</span>
+        <h3 id="sketchfab-title">3D Game Model Interactive Viewer</h3>
+        <p>Real-time interactive 3D asset crafted for video games and real-time visualization. Click and drag to view in full 3D space.</p>
+        
+        <div class="model-selector">
+          <button class="model-tab-btn active" onclick="loadSketchfabModel('pO69M', 'Game Asset Model A', this)">Asset Model 1</button>
+          <button class="model-tab-btn" onclick="loadSketchfabModel('pO69J', 'Game Asset Model B', this)">Asset Model 2</button>
+          <button class="model-tab-btn" onclick="loadSketchfabModel('pO69K', 'Game Asset Model C', this)">Asset Model 3</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 3D Product Gallery Swipe Popup (Full Size Renders) -->
+  <div class="modal" id="product-modal">
+    <span class="close-modal" onclick="closeModal('product-modal')">&times;</span>
+    <div class="modal-content">
+      <div class="modal-img-container">
+        <button class="slider-btn prev" onclick="prevProductImage()">&#10094;</button>
+        <img id="product-modal-img" src="" alt="3D Product Asset">
+        <button class="slider-btn next" onclick="nextProductImage()">&#10095;</button>
+      </div>
+      <div class="modal-details">
+        <span id="product-counter">Asset 1 of 6</span>
+        <h3 id="product-modal-title">3D Product Render Showcase</h3>
+        <p>Full size 3D product renders optimized for high-end digital presentation and real-time environments.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Statistics Banner -->
-  <section style="padding: 0 50px;">
+  <section style="padding: 0 60px;">
     <div class="stats-container">
       <div class="stat-box">
         <h3>500+</h3>
-        <p>Projects Delivered</p>
+        <p>Renderings Delivered</p>
       </div>
       <div class="stat-box">
         <h3>8+</h3>
-        <p>Years of Experience</p>
+        <p>Years Experience</p>
       </div>
       <div class="stat-box">
         <h3>30+</h3>
-        <p>Client Countries</p>
+        <p>International Clients</p>
       </div>
       <div class="stat-box">
         <h3>100%</h3>
-        <p>Client Satisfaction</p>
+        <p>Detail Guarantee</p>
       </div>
     </div>
   </section>
@@ -539,118 +757,72 @@
   <!-- About Section -->
   <section id="about">
     <span class="section-tag">The Studio</span>
-    <h2>Where Architecture Meets Art</h2>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; color: var(--text-gray);">
-      <p>Founded in 2018, Ray Studio 18 began as a one-person operation with a single conviction: that photorealistic visualization could be both technically flawless and emotionally resonant. Over eight years, that conviction has grown into a team of specialists — architects, artists, and animators — united by an obsession with light, material, and space.</p>
-      <p>We work at the intersection of architecture and storytelling. Every project begins with a deep understanding of the design intent, the target audience, and the emotional response the client wants to evoke. From there, we build worlds — pixel by pixel, frame by frame — until the image speaks for itself.</p>
+    <h2>Where Spatial Vision Meets Digital Craftsmanship</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 30px; color: var(--text-muted); font-size: 1.05rem; line-height: 1.7;">
+      <p>Ray Studio 18 specializes in hyper-realistic 3D rendering for high-end architects, developers, and interior designers. We focus heavily on realistic material textures, ambient lighting conditions, and precise physical proportions.</p>
+      <p>Whether presenting concepts to discerning residential clients or marketing landmark commercial developments, our visuals bridge the gap between blueprints and realistic physical presence.</p>
     </div>
 
-    <!-- Process -->
+    <!-- Principles Grid -->
     <div style="margin-top: 80px;">
-      <span class="section-tag">How We Work</span>
-      <h2>A Process Built for Precision</h2>
-      <div class="process-list">
-        <div class="process-step">
-          <span class="process-num">01</span>
-          <span class="process-title">Discovery</span>
-          <span class="process-desc">We begin every engagement with a thorough brief – understanding the project's design intent, target audience, mood, and deliverable requirements.</span>
-        </div>
-        <div class="process-step">
-          <span class="process-num">02</span>
-          <span class="process-title">Concept & Blocking</span>
-          <span class="process-desc">We establish camera angles, lighting direction, and material palette before committing to full production. You approve the direction before we invest in detail.</span>
-        </div>
-        <div class="process-step">
-          <span class="process-num">03</span>
-          <span class="process-title">Production</span>
-          <span class="process-desc">Our team builds the scene with meticulous attention to geometry, material accuracy, and lighting physics. We iterate rapidly, sharing progress at defined milestones.</span>
-        </div>
-        <div class="process-step">
-          <span class="process-num">04</span>
-          <span class="process-title">Refinement</span>
-          <span class="process-desc">Two rounds of revisions are included on every project. We refine until the image matches your vision – not just technically, but emotionally.</span>
-        </div>
-        <div class="process-step">
-          <span class="process-num">05</span>
-          <span class="process-title">Delivery</span>
-          <span class="process-desc">Final files are delivered in agreed formats – print-ready TIFFs, web-optimised JPEGs, or animation exports – with a structured handoff and archive package.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Principles -->
-    <div style="margin-top: 80px;">
-      <span class="section-tag">What Drives Us</span>
-      <h2>Our Principles</h2>
+      <span class="section-tag">Core Standards</span>
+      <h2>Design Principles</h2>
       <div class="principles-grid">
         <div class="principle-card">
-          <h3>Craft Over Speed</h3>
-          <p>We take the time to get it right. Every render is reviewed against a quality benchmark before it leaves the studio.</p>
+          <h3>Authentic Lighting</h3>
+          <p>We engineer realistic natural and artificial lighting setups that add depth, warmth, and emotion to every frame.</p>
         </div>
         <div class="principle-card">
-          <h3>Transparency</h3>
-          <p>Clear timelines, honest feedback, and no surprises. We communicate proactively at every stage of production.</p>
-        </div>
-        <div class="principle-card">
-          <h3>Collaboration</h3>
-          <p>We treat every client as a creative partner. Your expertise in the project combined with ours in visualization produces the best outcomes.</p>
-        </div>
-        <div class="principle-card">
-          <h3>Continuous Improvement</h3>
-          <p>We invest in the latest rendering technology and techniques so our output stays ahead of industry standards.</p>
+          <h3>Material Tactility</h3>
+          <p>High-resolution texturing ensures realistic presentation of wood grains, natural stone, metals, and fine textiles.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Start a Project / Contact Section -->
+  <!-- Contact Section -->
   <section id="start-project">
-    <span class="section-tag">Let's Collaborate</span>
-    <h2>Start a Project</h2>
+    <span class="section-tag">Initiate Project</span>
+    <h2>Start a Collaboration</h2>
     
     <div class="contact-container">
       <div class="contact-info">
-        <p>Tell us about your project. We'll review your brief and get back to you within 24 hours with a tailored proposal.</p>
+        <p>Share your architectural plans or project briefs with us. Our team will review the scope and deliver a tailored proposal within 24 hours.</p>
         
         <div class="contact-details">
           <div>
-            <label>Email</label>
+            <label>Direct Email</label>
             <span>kiranpanchal@raystudio18.com</span>
           </div>
           <div>
-            <label>Response Time</label>
+            <label>Turnaround Estimate</label>
             <span>Within 24 Hours</span>
-          </div>
-          <div>
-            <label>Based In</label>
-            <span>Global – serving clients in 30+ countries</span>
           </div>
         </div>
       </div>
 
-      <form onsubmit="event.preventDefault(); alert('Form Submitted!');">
+      <form onsubmit="event.preventDefault(); alert('Thank you! Your inquiry has been sent.');">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" placeholder="Jane Smith" required>
+          <input type="text" placeholder="e.g. Eleanor Vance" required>
         </div>
         <div class="form-group">
           <label>Email Address *</label>
-          <input type="email" placeholder="jane@studio.com" required>
+          <input type="email" placeholder="e.g. eleanor@studio.com" required>
         </div>
         <div class="form-group">
-          <label>Service Required</label>
+          <label>Service Scope</label>
           <select>
-            <option>Architectural Rendering</option>
-            <option>Interior Visualization</option>
-            <option>Walkthrough Animation</option>
-            <option>Product Rendering</option>
+            <option>Interior Architectural Rendering</option>
+            <option>Exterior Architectural Render</option>
+            <option>Commercial Development</option>
           </select>
         </div>
         <div class="form-group">
           <label>Project Brief *</label>
-          <textarea rows="4" placeholder="Tell us about your project scope, timeline, and deliverables..." required></textarea>
+          <textarea rows="5" placeholder="Provide project overview, image counts, and target deadline..." required></textarea>
         </div>
-        <button type="submit" class="btn-gold">Start a Project</button>
+        <button type="submit" class="btn-dark">Submit Request</button>
       </form>
     </div>
   </section>
@@ -659,67 +831,246 @@
   <footer id="contact">
     <div class="footer-grid">
       <div>
-        <div class="logo" style="margin-bottom: 15px;">Ray Studio 18</div>
-        <p style="color: var(--text-gray); font-size: 0.85rem; max-width: 300px;">World-class 3D visualization for architecture, interiors, and products.</p>
+        <div class="footer-brand">
+          <img src="https://i.postimg.cc/qMT2XWV5/Chat-GPT-Image-Sep-25-2026-10-07-47-AM.png" alt="Ray Studio 18 Logo" class="footer-logo">
+          <span class="footer-title">Ray Studio 18</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 320px; line-height: 1.6;">High-end 3D architectural and interior visualization studio.</p>
       </div>
       <div>
-        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; color: var(--text-gray);">Navigation</h4>
-        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem;">
+        <h4 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; color: var(--accent-gold);">Navigation</h4>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; color: var(--text-muted);">
           <a href="#services">Services</a>
           <a href="#portfolio">Portfolio</a>
-          <a href="#about">About</a>
-          <a href="#start-project">Contact</a>
+          <a href="#about">About Studio</a>
         </div>
       </div>
       <div>
-        <h4 style="font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; color: var(--text-gray);">Connect</h4>
-        <p style="color: var(--text-gray); font-size: 0.85rem;">kiranpanchal@raystudio18.com</p>
+        <h4 style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; color: var(--accent-gold);">Inquiries</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">kiranpanchal@raystudio18.com</p>
       </div>
     </div>
 
     <div class="footer-bottom">
       <span>© 2026 Ray Studio 18. All rights reserved.</span>
-      <span>3D Visualization • Architectural Rendering • Product Animation</span>
+      <span>3D Architectural Visualization Studio</span>
     </div>
   </footer>
 
-  <!-- Tab Switching Logic for Services -->
+  <!-- JavaScript -->
   <script>
-    const servicesData = [
+    // Portfolio Items Array including 2 New Portfolio Renders
+    const portfolioItems = [
       {
-        title: "Architectural Rendering",
-        subtitle: "Exterior & aerial perspectives that sell the vision before the first brick is laid.",
-        desc: "We produce photorealistic exterior renders for residential, commercial, and mixed-use projects at every scale — from a single-family home to a city-block masterplan.",
-        deliverables: ["Exterior day & dusk renders", "Aerial and bird's-eye perspectives", "Contextual street-level views", "Masterplan overviews"],
-        turnaround: "5 – 10 business days"
+        title: "3D Game Model (Sketchfab)",
+        category: "Interactive 3D Model",
+        image: "https://i.postimg.cc/zykDk7c9/1.jpg",
+        desc: "Interactive 3D game model viewer powered by Sketchfab.",
+        type: "sketchfab"
       },
       {
+        title: "3D Product Render Showcase",
+        category: "Full Size 3D Product Render",
+        image: "https://i.postimg.cc/8JxTC07z/2.jpg",
+        desc: "High-resolution 3D product render showcase featuring full size renders.",
+        type: "product"
+      },
+      {
+        title: "The Crest Residence Exterior",
+        category: "Architectural Exterior",
+        image: "https://i.postimg.cc/Hx6F4bVD/20-Pine-Hill-St-Demarest-Front-View-Final.jpg",
+        desc: "A luxury multi-story estate rendering highlighting timber accent paneling, natural stone cladding, and balanced exterior architectural lighting.",
+        type: "standard"
+      },
+      {
+        title: "Villa Solaria Elevation",
+        category: "Architectural Exterior",
+        image: "https://i.postimg.cc/Tw34whQ1/Gonzales-Front-View-4K-CC.jpg",
+        desc: "Modern Mediterranean villa concept featuring clean white stucco facades, floor-to-ceiling glass paneling, and warm entry accents.",
+        type: "standard"
+      },
+      {
+        title: "Monochrome Minimalist Kitchen",
+        category: "Interior Rendering",
+        image: "https://i.postimg.cc/8CjvzSMN/Kitchen-View.jpg",
+        desc: "Custom kitchen space with matte black cabinetry, waterfall island countertops, and recessed architectural spotlighting.",
+        type: "standard"
+      },
+      {
+        title: "Grand Horizon Living Lounge",
+        category: "Interior Rendering",
+        image: "https://i.postimg.cc/BvXFn0Hf/Lot3-Great-Room-Post.jpg",
+        desc: "An expansive double-height living room visualization emphasizing natural daylighting, open spatial layout, and contemporary furnishings.",
+        type: "standard"
+      },
+      {
+        title: "Aura Master Bath Suite",
+        category: "Interior Visualization",
+        image: "https://i.postimg.cc/6QyZpXnW/Lot3-Master-Bathroom-Post.jpg",
+        desc: "Spa-inspired bathroom design featuring marble slab walls, a standalone soaking tub, and custom brass hardware fixtures.",
+        type: "standard"
+      },
+      {
+        title: "Serenity Master Bedroom",
+        category: "Interior Visualization",
+        image: "https://i.postimg.cc/bvWtGB91/Lot3-Master-Bedroom-Post-CC.jpg",
+        desc: "Sophisticated bedroom suite complete with a custom upholstered headboard, floor-to-ceiling windows, and ambient cove lighting.",
+        type: "standard"
+      },
+      {
+        title: "Urban Gourmet Kitchen Island",
+        category: "Interior Rendering",
+        image: "https://i.postimg.cc/s2vWgr7d/Lot3-Kitchen-Post.jpg",
+        desc: "Open-plan kitchen render emphasizing high-end stainless steel appliances, custom pendant fixtures, and polished oak flooring.",
+        type: "standard"
+      },
+      {
+        title: "The Glasshouse Patio Perspective",
+        category: "Architectural Exterior",
+        image: "https://i.postimg.cc/fbp93rfc/View1CC.jpg",
+        desc: "Indoor-outdoor living concept showing seamless transition through sliding glass walls to a private courtyard setting.",
+        type: "standard"
+      },
+      {
+        title: "Elysian Residence Level One",
+        category: "Interior Visualization",
+        image: "https://i.postimg.cc/7ZB746GH/1st-Floor-CC1.jpg",
+        desc: "First-floor open layout view highlighting custom millwork, integrated dining area, and warm wood textures.",
+        type: "standard"
+      },
+      {
+        title: "Elysian Residence Level Two Suite",
+        category: "Interior Visualization",
+        image: "https://i.postimg.cc/HLVMkgXG/2nd-Floor-CC1.jpg",
+        desc: "Upper-floor perspective showing private suite access, glass balcony balustrades, and soft indirect lighting.",
+        type: "standard"
+      }
+    ];
+
+    // Populate Portfolio Grid
+    const container = document.getElementById('portfolio-container');
+    portfolioItems.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'portfolio-card';
+      
+      if (item.type === 'sketchfab') {
+        card.onclick = () => openSketchfabModal();
+      } else if (item.type === 'product') {
+        card.onclick = () => openProductModal(0);
+      } else {
+        card.onclick = () => openModal(index);
+      }
+
+      card.innerHTML = `
+        <div class="img-wrapper">
+          <img src="${item.image}" alt="${item.title}">
+        </div>
+        <div class="portfolio-info">
+          <span>${item.category}</span>
+          <h3>${item.title}</h3>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Lightbox Modal Logic
+    function openModal(index) {
+      const item = portfolioItems[index];
+      document.getElementById('modal-img').src = item.image;
+      document.getElementById('modal-title').innerText = item.title;
+      document.getElementById('modal-category').innerText = item.category;
+      document.getElementById('modal-desc').innerText = item.desc;
+      document.getElementById('portfolio-modal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    /* SKETCHFAB POPUP LOGIC */
+    function openSketchfabModal() {
+      document.getElementById('sketchfab-modal').style.display = 'flex';
+    }
+
+    function loadSketchfabModel(modelId, title, btn) {
+      document.getElementById('sketchfab-frame').src = `https://sketchfab.com/models/${modelId}/embed`;
+      document.getElementById('sketchfab-title').innerText = title;
+      
+      const buttons = document.querySelectorAll('.model-tab-btn');
+      buttons.forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    }
+
+    /* 3D PRODUCT MODELLING SLIDER LOGIC */
+    const productImages = [
+      { url: "https://i.postimg.cc/zykDk7c9/1.jpg", title: "3D Product Asset #1 - Full Size Render" },
+      { url: "https://i.postimg.cc/8JxTC07z/2.jpg", title: "3D Product Asset #2 - Full Size Render" },
+      { url: "https://i.postimg.cc/bSbpS9nn/3.jpg", title: "3D Product Asset #3 - Material Breakdown" },
+      { url: "https://i.postimg.cc/hfWSWNF0/4.jpg", title: "3D Product Asset #4 - Studio Lighting Render" },
+      { url: "https://i.postimg.cc/TKTfhm3J/5.jpg", title: "3D Product Asset #5 - High-Poly Detail View" },
+      { url: "https://i.postimg.cc/MnpNhYGr/6.jpg", title: "3D Product Asset #6 - Real-Time Engine Preview" }
+    ];
+
+    let currentProductIndex = 0;
+
+    function openProductModal(index) {
+      currentProductIndex = index;
+      updateProductSlider();
+      document.getElementById('product-modal').style.display = 'flex';
+    }
+
+    function updateProductSlider() {
+      const item = productImages[currentProductIndex];
+      document.getElementById('product-modal-img').src = item.url;
+      document.getElementById('product-modal-title').innerText = item.title;
+      document.getElementById('product-counter').innerText = `Asset ${currentProductIndex + 1} of ${productImages.length}`;
+    }
+
+    function nextProductImage() {
+      currentProductIndex = (currentProductIndex + 1) % productImages.length;
+      updateProductSlider();
+    }
+
+    function prevProductImage() {
+      currentProductIndex = (currentProductIndex - 1 + productImages.length) % productImages.length;
+      updateProductSlider();
+    }
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    }
+
+    // Services Tab Logic
+    const servicesData = [
+      {
         title: "Interior Visualization",
-        subtitle: "Spaces that feel lived-in before they exist — light, material, and atmosphere perfected.",
-        desc: "Interior visualization is where light and material science meet emotional storytelling. We model every surface to produce interior renders that feel genuinely inhabited.",
-        deliverables: ["Living, dining, and bedroom renders", "Kitchen and bathroom close-ups", "Hospitality and commercial interiors"],
+        subtitle: "Spaces that feel lived-in before they exist.",
+        desc: "We model every surface to produce interior renders that feel genuinely inhabited and precisely illuminated.",
+        deliverables: ["Living, dining, and bedroom renders", "Kitchen and bathroom close-ups", "Material lighting variations"],
         turnaround: "5 – 8 business days"
       },
       {
-        title: "Walkthrough Animation",
-        subtitle: "Cinematic fly-throughs and walk-throughs that guide viewers through every space.",
-        desc: "Our animation team produces fully rendered architectural walkthroughs at up to 4K resolution.",
-        deliverables: ["Exterior fly-through animations", "Interior walkthrough sequences", "Drone perspective aerials"],
-        turnaround: "10 – 20 business days"
+        title: "Architectural Exterior",
+        subtitle: "Striking exterior visuals that present structural designs elegantly.",
+        desc: "Photorealistic exterior visualization showcasing exterior materials, surrounding greenery, and atmospheric lighting.",
+        deliverables: ["Daylight & Twilight perspectives", "Contextual surrounding views", "High-res marketing renders"],
+        turnaround: "6 – 10 business days"
       },
       {
-        title: "Product Rendering & Animation",
-        subtitle: "Studio-quality product imagery and motion for launches and e-commerce.",
-        desc: "We give physical products to-scale, hyper-realistic 3D renders and animations — no studio photography needed.",
-        deliverables: ["Hero product renders on white or custom backgrounds", "360° turntable animations", "Exploded-view detail shots"],
-        turnaround: "3 – 7 business days"
+        title: "Commercial Spaces",
+        subtitle: "Office interiors, hospitality, and retail spaces.",
+        desc: "Renders designed to help clients and stakeholders visualize commercial space layouts and branding environments.",
+        deliverables: ["Reception & Office floors", "Retail store displays", "Restaurant & Lounge concepts"],
+        turnaround: "7 – 12 business days"
       },
       {
-        title: "3D Modeling Outsourcing",
-        subtitle: "Dedicated rendering capacity for studios that need to scale without hiring.",
-        desc: "We act as a white-label production partner for architecture firms, interior design studios, and visualization agencies.",
-        deliverables: ["White-label rendering under your brand", "Dedicated project manager", "Revit, SketchUp, Rhino, 3ds Max, Blender support"],
-        turnaround: "Agreed per engagement"
+        title: "Material & Lighting Design",
+        subtitle: "Hyper-realistic focus on texture details and studio lighting.",
+        desc: "Close-up rendering highlighting bespoke furniture pieces, lighting fixtures, and custom material palettes.",
+        deliverables: ["Furniture close-ups", "Texture and material breakdowns", "Lighting setup options"],
+        turnaround: "3 – 5 business days"
       }
     ];
 
